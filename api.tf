@@ -23,22 +23,22 @@ resource "aws_api_gateway_method" "api_gateway_method_get" {
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
   resource_id   = aws_api_gateway_resource.fiapx_api.id
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
 }
 
 resource "aws_api_gateway_method" "api_gateway_method_post" {
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
   resource_id   = aws_api_gateway_resource.fiapx_api.id
   http_method   = "POST"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
 }
 
 resource "aws_api_gateway_integration" "get_integration" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
   resource_id = aws_api_gateway_resource.fiapx_api.id
   http_method = aws_api_gateway_method.api_gateway_method_get.http_method
-  type        = "HTTP_PROXY"
-  integration_http_method = "ANY"
+  type        = "VPC_LINK"
+  integration_http_method = "GET"
   uri         = "http://meu-alb-endpoint.com"
 }
 
@@ -46,8 +46,8 @@ resource "aws_api_gateway_integration" "post_integration" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
   resource_id = aws_api_gateway_resource.fiapx_api.id
   http_method = aws_api_gateway_method.api_gateway_method_post.http_method
-  type        = "HTTP_PROXY"
-  integration_http_method = "ANY"
+  type        = "VPC_LINK"
+  integration_http_method = "POST"
   uri         = "http://meu-alb-endpoint.com"
 }
 
