@@ -46,7 +46,7 @@ resource "aws_api_gateway_method" "api_gateway_method_post" {
 resource "aws_api_gateway_method_settings" "s" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
   stage_name  = aws_api_gateway_stage.fiapx_api_stage.stage_name
-  method_path = "${aws_api_gateway_resource.fiapx_api.path_part}/${api_gateway_method_get.fiapx_api.http_method}"
+  method_path = ["${aws_api_gateway_resource.fiapx_api_resource.path_part}/${api_gateway_method_get.fiapx_api.http_method}","${aws_api_gateway_resource.fiapx_api_resource.path_part}/${api_gateway_method_post.fiapx_api.http_method}"]
 
   settings {
     metrics_enabled = true
