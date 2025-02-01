@@ -12,7 +12,12 @@ resource "aws_api_gateway_authorizer" "cognito_auth" {
   provider_arns = [aws_cognito_user_pool.fiapx_pool.arn]
 }
 
+resource "aws_api_gateway_stage" "fiapx_api_stage" {
+  stage_name    = "prod"
+  rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
+  deployment_id = aws_api_gateway_deployment.fiapx_api.id
+}
+
 resource "aws_api_gateway_deployment" "fiapx_api" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
-  stage_name  = "prod"
 }
