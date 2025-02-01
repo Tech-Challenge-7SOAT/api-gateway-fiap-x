@@ -33,6 +33,24 @@ resource "aws_api_gateway_method" "api_gateway_method_post" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_integration" "get_integration" {
+  rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
+  resource_id = aws_api_gateway_resource.fiapx_api.id
+  http_method = aws_api_gateway_method.api_gateway_method_get.http_method
+  type        = "HTTP_PROXY"
+  integration_http_method = "ANY"
+  uri         = "http://meu-alb-endpoint.com"
+}
+
+resource "aws_api_gateway_integration" "post_integration" {
+  rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
+  resource_id = aws_api_gateway_resource.fiapx_api.id
+  http_method = aws_api_gateway_method.api_gateway_method_post.http_method
+  type        = "HTTP_PROXY"
+  integration_http_method = "ANY"
+  uri         = "http://meu-alb-endpoint.com"
+}
+
 resource "aws_api_gateway_method_settings" "s_get" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
   stage_name  = aws_api_gateway_stage.fiapx_api_stage.stage_name
@@ -56,6 +74,10 @@ resource "aws_api_gateway_method_settings" "s_post" {
 }
 
 resource "aws_api_gateway_deployment" "fiapx_api" {
+  depends_on = [
+    aws_api_gateway_integration.get_integration,
+    aws_api_gateway_integration.post_integration
+  ]
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
 }
 
