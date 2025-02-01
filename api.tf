@@ -32,7 +32,7 @@ resource "aws_api_gateway_integration" "proxy" {
   http_method = aws_api_gateway_method.proxy.http_method
   type        = "HTTP_PROXY"
   integration_http_method = "ANY"
-  uri         = aws_lb.my_alb.dns_name
+  uri         = aws_lb.ecs_alb.dns_name
 }
 
 resource "aws_api_gateway_deployment" "fiapx_api" {
