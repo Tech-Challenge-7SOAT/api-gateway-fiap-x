@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform-state"
-    key            = "terraform.tfstate"
+    bucket         = "fiap-x-storage"
+    key            = "terraform/state/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
   }
