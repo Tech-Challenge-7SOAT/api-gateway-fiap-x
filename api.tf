@@ -13,7 +13,7 @@ resource "aws_api_gateway_authorizer" "cognito_auth" {
   provider_arns = [aws_cognito_user_pool.fiapx_pool.arn]
 }
 
-resource "aws_api_gateway_deployment" "fiapx_api" {
+resource "aws_api_gateway_deployment" "fiapx_api_deployment" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
 }
 
