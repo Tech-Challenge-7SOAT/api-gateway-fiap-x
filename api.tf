@@ -13,7 +13,6 @@ resource "aws_api_gateway_authorizer" "cognito_auth" {
 }
 
 resource "aws_api_gateway_deployment" "fiapx_api" {
-  depends_on  = [aws_api_gateway_integration.proxy]
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
   stage_name  = "prod"
 }
