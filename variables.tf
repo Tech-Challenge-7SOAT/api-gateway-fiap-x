@@ -29,3 +29,7 @@ variable "labRole" {
 variable "principalArn" {
   default = "arn:aws:iam::083261780098:role/voclabs"
 }
+
+variable "policyArn" {
+  default = "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+}
