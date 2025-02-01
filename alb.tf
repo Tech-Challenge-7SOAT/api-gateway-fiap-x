@@ -3,7 +3,7 @@ resource "aws_lb" "ecs_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
-  subnets            = aws_subnet.public[*].id
+  subnets            = ["subnet-003e817ffe15d15ea","subnet-0eb22f1eba7179b36"]
 
   enable_deletion_protection = false
 }
@@ -12,7 +12,7 @@ resource "aws_lb_target_group" "ecs_tg" {
   name        = "ecs-target-group"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.default.id
+  vpc_id      = "vpc-08ecc39bed2c7c9fb"
 }
 
 resource "aws_lb_listener" "http" {
@@ -27,7 +27,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_security_group" "alb_sg" {
-  vpc_id = aws_vpc.default.id
+  vpc_id = "vpc-08ecc39bed2c7c9fb"
   
   ingress {
     from_port   = 80
