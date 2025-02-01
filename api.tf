@@ -12,29 +12,6 @@ resource "aws_api_gateway_authorizer" "cognito_auth" {
   provider_arns = [aws_cognito_user_pool.fiapx_pool.arn]
 }
 
-resource "aws_api_gateway_resource" "proxy" {
-  rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
-  parent_id   = aws_api_gateway_rest_api.fiapx_api.root_resource_id
-  path_part   = "proxy"
-}
-
-resource "aws_api_gateway_method" "proxy" {
-  rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
-  resource_id   = aws_api_gateway_resource.proxy.id
-  http_method   = "ANY"
-  authorization = "COGNITO_USER_POOLS"
-  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
-}
-
-resource "aws_api_gateway_integration" "proxy" {
-  rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.proxy.http_method
-  type        = "HTTP_PROXY"
-  integration_http_method = "ANY"
-  uri         = "http://${aws_lb.ecs_alb.dns_name}"
-}
-
 resource "aws_api_gateway_deployment" "fiapx_api" {
   depends_on  = [aws_api_gateway_integration.proxy]
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
