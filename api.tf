@@ -32,7 +32,7 @@ resource "aws_api_gateway_integration" "http_integration_get" {
   http_method             = aws_api_gateway_method.api_gateway_method_get.http_method
   integration_http_method = "GET"
   type                    = "HTTP"
-  uri                     = "https://${aws_lb.my_alb.dns_name}"
+  uri                     = "https://${aws_lb.ecs_alb.dns_name}"
 }
 
 resource "aws_api_gateway_method" "api_gateway_method_post" {
@@ -48,7 +48,7 @@ resource "aws_api_gateway_integration" "http_integration_post" {
   http_method             = aws_api_gateway_method.api_gateway_method_post.http_method
   integration_http_method = "POST"
   type                    = "HTTP"
-  uri                     = "https://${aws_lb.my_alb.dns_name}"
+  uri                     = "https://${aws_lb.ecs_alb.dns_name}"
 }
 
 resource "aws_api_gateway_deployment" "fiapx_api_deployment" {
