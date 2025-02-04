@@ -13,7 +13,7 @@ resource "aws_api_gateway_authorizer" "cognito_auth" {
   provider_arns = [aws_cognito_user_pool.fiapx_pool.arn]
 }
 
-resource "aws_api_gateway_resource" "fiapx_api" {
+resource "aws_api_gateway_resource" "fiapx_api_resource" {
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
   parent_id   = aws_api_gateway_rest_api.fiapx_api.root_resource_id
   path_part   = "videos"
@@ -21,68 +21,40 @@ resource "aws_api_gateway_resource" "fiapx_api" {
 
 resource "aws_api_gateway_method" "api_gateway_method_get" {
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
-  resource_id   = aws_api_gateway_resource.fiapx_api.id
+  resource_id   = aws_api_gateway_resource.fiapx_api_resource.id
   http_method   = "GET"
-  authorization = "COGNITO_USER_POOLS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "http_integration_get" {
+  rest_api_id             = aws_api_gateway_rest_api.fiapx_api.id
+  resource_id             = aws_api_gateway_resource.fiapx_api_resource.id
+  http_method             = aws_api_gateway_method.api_gateway_method_get.http_method
+  integration_http_method = "GET"
+  type                    = "HTTP"
+  uri                     = "https://${aws_lb.my_alb.dns_name}"
 }
 
 resource "aws_api_gateway_method" "api_gateway_method_post" {
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
-  resource_id   = aws_api_gateway_resource.fiapx_api.id
+  resource_id   = aws_api_gateway_resource.fiapx_api_resource.id
   http_method   = "POST"
-  authorization = "COGNITO_USER_POOLS"
+  authorization = "NONE"
 }
 
-resource "aws_api_gateway_integration" "get_integration" {
+resource "aws_api_gateway_integration" "http_integration_post" {
   rest_api_id             = aws_api_gateway_rest_api.fiapx_api.id
-  resource_id             = aws_api_gateway_resource.fiapx_api.id
-  http_method             = aws_api_gateway_method.api_gateway_method_get.http_method
-  type                    = "HTTP_PROXY"
-
-  integration_http_method = "GET"
-  connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.fiapx_vpc_link.id
-  uri                     = "http://${aws_lb.ecs_alb.dns_name}"
-}
-
-resource "aws_api_gateway_integration" "post_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.fiapx_api.id
-  resource_id             = aws_api_gateway_resource.fiapx_api.id
+  resource_id             = aws_api_gateway_resource.fiapx_api_resource.id
   http_method             = aws_api_gateway_method.api_gateway_method_post.http_method
-  type                    = "HTTP_PROXY"
-
   integration_http_method = "POST"
-  connection_type         = "VPC_LINK"
-  connection_id           = aws_api_gateway_vpc_link.fiapx_vpc_link.id
-  uri                     = "http://${aws_lb.ecs_alb.dns_name}"
+  type                    = "HTTP"
+  uri                     = "https://${aws_lb.my_alb.dns_name}"
 }
 
-resource "aws_api_gateway_method_settings" "s_get" {
-  rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
-  stage_name  = aws_api_gateway_stage.fiapx_api_stage.stage_name
-  method_path = "${aws_api_gateway_resource.fiapx_api.path_part}/${aws_api_gateway_method.api_gateway_method_get.http_method}"
-
-  settings {
-    metrics_enabled = true
-    logging_level   = "INFO"
-  }
-}
-
-resource "aws_api_gateway_method_settings" "s_post" {
-  rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
-  stage_name  = aws_api_gateway_stage.fiapx_api_stage.stage_name
-  method_path = "${aws_api_gateway_resource.fiapx_api.path_part}/${aws_api_gateway_method.api_gateway_method_post.http_method}"
-
-  settings {
-    metrics_enabled = true
-    logging_level   = "INFO"
-  }
-}
-
-resource "aws_api_gateway_deployment" "fiapx_api" {
+resource "aws_api_gateway_deployment" "fiapx_api_deployment" {
   depends_on = [
-    aws_api_gateway_integration.get_integration,
-    aws_api_gateway_integration.post_integration
+    aws_api_gateway_integration.http_integration_get,
+    aws_api_gateway_integration.http_integration_post
   ]
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
 }
@@ -90,5 +62,5 @@ resource "aws_api_gateway_deployment" "fiapx_api" {
 resource "aws_api_gateway_stage" "fiapx_api_stage" {
   stage_name    = "prod"
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
-  deployment_id = aws_api_gateway_deployment.fiapx_api.id
+  deployment_id = aws_api_gateway_deployment.fiapx_api_deployment.id
 }
