@@ -1,15 +1,15 @@
-# resource "aws_lb" "example" {
-#   name               = "example"
-#   internal           = true
-#   load_balancer_type = "network"
+resource "aws_lb" "lb_fiapx" {
+  name               = "LB-fiapx"
+  internal           = true
+  load_balancer_type = "network"
 
-#   subnet_mapping {
-#     subnet_id = "12345"
-#   }
-# }
+  subnet_mapping {
+    subnet_id = data.aws_subnets.default.ids
+  }
+}
 
-# resource "aws_api_gateway_vpc_link" "example" {
-#   name        = "example"
-#   description = "example description"
-#   target_arns = [aws_lb.example.arn]
-# }
+resource "aws_api_gateway_vpc_link" "vpclink_fiapx" {
+  name        = "VPCLink-fiapx"
+  description = "VPC Link FIAPX"
+  target_arns = aws_lb.ecs_alb.arn
+}
