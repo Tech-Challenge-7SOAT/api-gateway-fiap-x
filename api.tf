@@ -23,7 +23,8 @@ resource "aws_api_gateway_method" "api_gateway_method_get" {
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
   resource_id   = aws_api_gateway_resource.fiapx_api_resource.id
   http_method   = "GET"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
 }
 
 resource "aws_api_gateway_integration" "http_integration_get" {
@@ -39,7 +40,8 @@ resource "aws_api_gateway_method" "api_gateway_method_post" {
   rest_api_id   = aws_api_gateway_rest_api.fiapx_api.id
   resource_id   = aws_api_gateway_resource.fiapx_api_resource.id
   http_method   = "POST"
-  authorization = "NONE"
+  authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
 }
 
 resource "aws_api_gateway_integration" "http_integration_post" {
@@ -54,7 +56,8 @@ resource "aws_api_gateway_integration" "http_integration_post" {
 resource "aws_api_gateway_deployment" "fiapx_api_deployment" {
   depends_on = [
     aws_api_gateway_integration.http_integration_get,
-    aws_api_gateway_integration.http_integration_post
+    aws_api_gateway_integration.http_integration_post,
+    aws_api_gateway_authorizer.cognito_auth
   ]
   rest_api_id = aws_api_gateway_rest_api.fiapx_api.id
 }
