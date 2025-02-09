@@ -24,6 +24,7 @@ resource "aws_api_gateway_method" "api_gateway_method_get" {
   resource_id   = aws_api_gateway_resource.fiapx_api_resource.id
   http_method   = "GET"
   authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
 }
 
 resource "aws_api_gateway_integration" "http_integration_get" {
@@ -40,6 +41,7 @@ resource "aws_api_gateway_method" "api_gateway_method_post" {
   resource_id   = aws_api_gateway_resource.fiapx_api_resource.id
   http_method   = "POST"
   authorization = "COGNITO_USER_POOLS"
+  authorizer_id = aws_api_gateway_authorizer.cognito_auth.id
 }
 
 resource "aws_api_gateway_integration" "http_integration_post" {
